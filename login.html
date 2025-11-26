@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Gaming Tournament Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: #f1f3f5;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .form-container {
+            display: none;
+        }
+        
+        .form-container.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .role-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .role-option {
+            flex: 1;
+            padding: 12px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .role-option.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .role-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .role-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo">
+        <div class="logo-icon">🎮</div>
+        <div class="logo-text">Gaming Tournament Hub</div>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('login')">Login</button>
+        <button class="tab" onclick="switchTab('register')">Register</button>
+    </div>
+    
+    <!-- Login Form -->
+    <div id="loginForm" class="form-container active">
+        <div class="alert alert-error" id="loginError"></div>
+        
+        <div class="form-group">
+            <label class="form-label">Username</label>
+            <input type="text" id="loginUsername" placeholder="Enter your username" />
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter your password" />
+        </div>
+        
+        <button class="submit-btn" onclick="login()">Login</button>
+        
+        <p style="text-align: center; margin-top: 20px; color: #6c757d; font-size: 13px;">
+            Default Admin: username: <strong>admin</strong>, password: <strong>admin123</strong>
+        </p>
+    </div>
+    
+    <!-- Register Form -->
+    <div id="registerForm" class="form-container">
+        <div class="alert alert-success" id="registerSuccess"></div>
+        <div class="alert alert-error" id="registerError"></div>
+        
+        <div class="form-group">
+            <label class="form-label">Username</label>
+            <input type="text" id="registerUsername" placeholder="Choose a username" />
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="registerEmail" placeholder="Enter your email" />
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="registerPassword" placeholder="Choose a password (min 6 characters)" />
+        </div>
+        
+        <button class="submit-btn" onclick="register()">Create Account</button>
+    </div>
+</div>
+
+<script>
+const API_URL = 'http://localhost/Gaming%20Hub/tournament-api';
+    
+    function switchTab(tab) {
+        // Update tab buttons
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // Update forms
+        document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
+        document.getElementById(tab + 'Form').classList.add('active');
+        
+        // Clear alerts
+        hideAllAlerts();
+    }
+    
+    function hideAllAlerts() {
+        document.querySelectorAll('.alert').forEach(a => a.style.display = 'none');
+    }
+    
+    function showError(elementId, message) {
+        hideAllAlerts();
+        const element = document.getElementById(elementId);
+        element.textContent = '❌ ' + message;
+        element.style.display = 'block';
+    }
+    
+    function showSuccess(elementId, message) {
+        hideAllAlerts();
+        const element = document.getElementById(elementId);
+        element.textContent = '✅ ' + message;
+        element.style.display = 'block';
+    }
+    
+    async function login() {
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        
+        if (!username || !password) {
+            showError('loginError', 'Please fill in all fields');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/login.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Store token and user info
+                localStorage.setItem('token', data.data.token);
+                localStorage.setItem('role', data.data.user.role);
+                localStorage.setItem('username', data.data.user.username);
+                localStorage.setItem('userId', data.data.user.id);
+                
+                // Redirect based on role
+                if (data.data.user.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'user.html';
+                }
+            } else {
+                showError('loginError', data.message);
+            }
+        } catch (error) {
+            showError('loginError', 'Network error. Please check your connection.');
+            console.error('Error:', error);
+        }
+    }
+    
+    async function register() {
+        const username = document.getElementById('registerUsername').value.trim();
+        const email = document.getElementById('registerEmail').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        
+        if (!username || !email || !password) {
+            showError('registerError', 'Please fill in all fields');
+            return;
+        }
+        
+        if (password.length < 6) {
+            showError('registerError', 'Password must be at least 6 characters');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/register.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, email, password })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showSuccess('registerSuccess', 'Account created! Redirecting...');
+                
+                // Store token and user info
+                localStorage.setItem('token', data.data.token);
+                localStorage.setItem('role', data.data.user.role);
+                localStorage.setItem('username', data.data.user.username);
+                localStorage.setItem('userId', data.data.user.id);
+                
+                // Redirect to user page
+                setTimeout(() => {
+                    window.location.href = 'user.html';
+                }, 1500);
+            } else {
+                showError('registerError', data.message);
+            }
+        } catch (error) {
+            showError('registerError', 'Network error. Please check your connection.');
+            console.error('Error:', error);
+        }
+    }
+    
+    // Allow Enter key to submit
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const loginFormActive = document.getElementById('loginForm').classList.contains('active');
+            if (loginFormActive) {
+                login();
+            } else {
+                register();
+            }
+        }
+    });
+    
+    // Check if already logged in
+    window.onload = function() {
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role');
+        
+        if (token && role) {
+            if (role === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'user.html';
+            }
+        }
+    };
+</script>
+
+</body>
+</html>

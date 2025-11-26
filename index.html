@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gaming Tournament Hub - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .hero-section {
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo-icon {
+            font-size: 120px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            line-height: 1.2;
+        }
+        
+        .tagline {
+            font-size: 22px;
+            margin-bottom: 50px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-btn {
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(255,255,255,0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(255,255,255,0.2);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 80px;
+            max-width: 1000px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .feature-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .games-section {
+            margin-top: 60px;
+            text-align: center;
+        }
+        
+        .games-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .games-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .game-badge {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: 600;
+            color: #667eea;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .game-badge:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 40px;
+            }
+            
+            .tagline {
+                font-size: 18px;
+            }
+            
+            .cta-btn {
+                padding: 15px 30px;
+                font-size: 16px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="logo-icon">🎮</div>
+        <h1>Gaming Tournament Hub</h1>
+        <p class="tagline">Join competitive gaming tournaments and win amazing prizes!</p>
+        
+        <div class="cta-buttons">
+            <a href="login.html" class="cta-btn btn-primary">Get Started</a>
+            <a href="#features" class="cta-btn btn-secondary">Learn More</a>
+        </div>
+    </div>
+    
+    <div class="games-section">
+        <h2 class="games-title">🏆 Featured Games</h2>
+        <div class="games-grid">
+            <div class="game-badge">🔥 Free Fire</div>
+            <div class="game-badge">🎯 PUBG Mobile</div>
+            <div class="game-badge">👑 Clash Royale</div>
+            <div class="game-badge">⚽ E Football</div>
+        </div>
+    </div>
+    
+    <div class="features" id="features">
+        <div class="feature-card">
+            <div class="feature-icon">🏆</div>
+            <div class="feature-title">Competitive Tournaments</div>
+            <div class="feature-desc">Join exciting tournaments with players from around the world</div>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">💰</div>
+            <div class="feature-title">Win Prizes</div>
+            <div class="feature-desc">Compete for amazing prize pools and rewards</div>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">👥</div>
+            <div class="feature-title">Team Up</div>
+            <div class="feature-desc">Create teams and play with your friends</div>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <div class="feature-title">Track Progress</div>
+            <div class="feature-desc">Monitor your tournament history and achievements</div>
+        </div>
+    </div>
+    
+    <script>
+
+        // api key
+
+const API_URL = 'http://localhost/Gaming%20Hub/tournament-api';
+
+        // Auto-redirect if already logged in
+        window.onload = function() {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
+            
+            if (token && role) {
+                if (role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'user.html';
+                }
+            }
+        };
+        
+        // Smooth scroll for "Learn More" button
+        document.querySelector('.btn-secondary').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('features').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+    </script>
+</body>
+</html>

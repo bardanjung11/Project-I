@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Dashboard - Gaming Tournament Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .username-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            background: #f1f3f5;
+            color: #495057;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .tab-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tournament-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        
+        .tournament-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .tournament-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .tournament-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .game-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .tournament-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .game-name {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .tournament-body {
+            padding: 20px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .info-label {
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .info-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .slots-indicator {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .slots-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .slots-bar {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .slots-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .register-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .register-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-upcoming {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-ongoing {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .registered-badge {
+            background: #d4edda;
+            color: #155724;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+        
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-text {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        #registerPopup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .popup-content {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .popup-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .popup-game {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        .confirm-btn, .cancel-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .confirm-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .cancel-btn {
+            background: #f1f3f5;
+            color: #495057;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-content">
+        <h1 class="logo">🎮 Gaming Tournament Hub</h1>
+        <div class="user-info">
+            <span class="username-badge" id="usernameDisplay">👤 User</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <h2 class="section-title">🏆 Tournaments</h2>
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('available')">Available Tournaments</button>
+        <button class="tab-btn" onclick="switchTab('registered')">My Tournaments</button>
+    </div>
+    
+    <!-- Available Tournaments Tab -->
+    <div id="availableTab" class="tab-content active">
+        <div class="tournament-grid" id="availableTournaments">
+            <!-- Tournaments will be loaded here -->
+        </div>
+    </div>
+    
+    <!-- My Tournaments Tab -->
+    <div id="registeredTab" class="tab-content">
+        <div class="tournament-grid" id="myTournaments">
+            <!-- User's tournaments will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Registration Popup -->
+<div id="registerPopup">
+    <div class="popup-content">
+        <h2 class="popup-title">Register for Tournament</h2>
+        <span class="popup-game" id="popupTournamentName"></span>
+        
+        <div class="alert alert-success" id="successMsg"></div>
+        <div class="alert alert-error" id="errorMsg"></div>
+        
+        <div class="form-group">
+            <label class="form-label">Team Name (Optional)</label>
+            <input type="text" id="teamNameInput" placeholder="Enter your team name" />
+        </div>
+        
+        <div class="button-group">
+            <button class="confirm-btn" onclick="confirmRegistration()">Confirm</button>
+            <button class="cancel-btn" onclick="closePopup()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_URL = 'http://localhost/Gaming%20Hub/tournament-api';
+
+let currentTournamentId = null;
+    
+    // Check if user is logged in
+    window.onload = function() {
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        
+        if (!token) {
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        document.getElementById('usernameDisplay').textContent = '👤 ' + username;
+        loadAvailableTournaments();
+    };
+    
+    function getGameIcon(game) {
+        const icons = {
+            'Free Fire': '🔥',
+            'PUBG': '🎯',
+            'Clash Royale': '👑',
+            'E Football': '⚽'
+        };
+        return icons[game] || '🎮';
+    }
+    
+    async function loadAvailableTournaments() {
+        try {
+            const response = await fetch(`${API_URL}/tournaments/list.php?status=upcoming`);
+            const data = await response.json();
+            
+            const container = document.getElementById('availableTournaments');
+            
+            if (data.success && data.data.tournaments.length > 0) {
+                container.innerHTML = data.data.tournaments.map(t => {
+                    const fillPercentage = (t.current_players / t.max_players) * 100;
+                    const isFull = t.current_players >= t.max_players;
+                    
+                    return `
+                        <div class="tournament-card">
+                            <div class="tournament-header">
+                                <div class="game-icon">${getGameIcon(t.game)}</div>
+                                <div class="tournament-name">${t.name}</div>
+                                <div class="game-name">${t.game}</div>
+                            </div>
+                            <div class="tournament-body">
+                                <div class="info-row">
+                                    <span class="info-label">Match Type:</span>
+                                    <span class="info-value">${t.match_type}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Entry Fee:</span>
+                                    <span class="info-value">$${t.entry_fee}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Prize Pool:</span>
+                                    <span class="info-value">$${t.prize_pool}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Start Date:</span>
+                                    <span class="info-value">${new Date(t.start_date).toLocaleDateString()}</span>
+                                </div>
+                                
+                                <div class="slots-indicator">
+                                    <div class="slots-text">${t.current_players} / ${t.max_players} players</div>
+                                    <div class="slots-bar">
+                                        <div class="slots-fill" style="width: ${fillPercentage}%"></div>
+                                    </div>
+                                </div>
+                                
+                                <button class="register-btn" onclick="openRegisterPopup(${t.id}, '${t.name}')" ${isFull ? 'disabled' : ''}>
+                                    ${isFull ? 'Tournament Full' : 'Register Now'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🎮</div>
+                        <div class="empty-text">No tournaments available at the moment</div>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error loading tournaments:', error);
+        }
+    }
+    
+    async function loadMyTournaments() {
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`${API_URL}/tournaments/my-registrations.php`, {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            const data = await response.json();
+            
+            const container = document.getElementById('myTournaments');
+            
+            if (data.success && data.data.registrations.length > 0) {
+                container.innerHTML = data.data.registrations.map(r => {
+                    const t = r.tournament;
+                    const fillPercentage = (t.current_players / t.max_players) * 100;
+                    
+                    return `
+                        <div class="tournament-card">
+                            <div class="tournament-header">
+                                <div class="game-icon">${getGameIcon(t.game)}</div>
+                                <div class="tournament-name">${t.name}</div>
+                                <div class="game-name">${t.game}</div>
+                            </div>
+                            <div class="tournament-body">
+                                <div class="registered-badge">✅ Registered</div>
+                                
+                                ${r.team_name ? `
+                                <div class="info-row">
+                                    <span class="info-label">Team Name:</span>
+                                    <span class="info-value">${r.team_name}</span>
+                                </div>
+                                ` : ''}
+                                
+                                <div class="info-row">
+                                    <span class="info-label">Match Type:</span>
+                                    <span class="info-value">${t.match_type}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Prize Pool:</span>
+                                    <span class="info-value">$${t.prize_pool}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Start Date:</span>
+                                    <span class="info-value">${new Date(t.start_date).toLocaleDateString()}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Status:</span>
+                                    <span class="status-badge status-${t.status}">${t.status}</span>
+                                </div>
+                                
+                                <div class="slots-indicator">
+                                    <div class="slots-text">${t.current_players} / ${t.max_players} players</div>
+                                    <div class="slots-bar">
+                                        <div class="slots-fill" style="width: ${fillPercentage}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <div class="empty-text">You haven't registered for any tournaments yet</div>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error loading my tournaments:', error);
+        }
+    }
+    
+    function switchTab(tab) {
+        // Update tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // Update tab content
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        if (tab === 'available') {
+            document.getElementById('availableTab').classList.add('active');
+        } else {
+            document.getElementById('registeredTab').classList.add('active');
+            loadMyTournaments();
+        }
+    }
+    
+    function openRegisterPopup(tournamentId, tournamentName) {
+        currentTournamentId = tournamentId;
+        document.getElementById('popupTournamentName').textContent = tournamentName;
+        document.getElementById('teamNameInput').value = '';
+        document.getElementById('successMsg').style.display = 'none';
+        document.getElementById('errorMsg').style.display = 'none';
+        document.getElementById('registerPopup').style.display = 'flex';
+    }
+    
+    function closePopup() {
+        document.getElementById('registerPopup').style.display = 'none';
+        currentTournamentId = null;
+    }
+    
+    async function confirmRegistration() {
+        const token = localStorage.getItem('token');
+        const teamName = document.getElementById('teamNameInput').value.trim();
+        
+        try {
+            const response = await fetch(`${API_URL}/tournaments/register.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    tournament_id: currentTournamentId,
+                    team_name: teamName || null
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                document.getElementById('successMsg').textContent = '✅ ' + data.message;
+                document.getElementById('successMsg').style.display = 'block';
+                document.getElementById('errorMsg').style.display = 'none';
+                
+                setTimeout(() => {
+                    closePopup();
+                    loadAvailableTournaments();
+                }, 2000);
+            } else {
+                document.getElementById('errorMsg').textContent = '❌ ' + data.message;
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('successMsg').style.display = 'none';
+            }
+        } catch (error) {
+            document.getElementById('errorMsg').textContent = '❌ Network error. Please try again.';
+            document.getElementById('errorMsg').style.display = 'block';
+            console.error('Error:', error);
+        }
+    }
+    
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('username');
+        localStorage.removeItem('userId');
+        window.location.href = 'login.html';
+    }
+    
+    // Close popup when clicking outside
+    document.getElementById('registerPopup').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePopup();
+        }
+    });
+</script>
+
+</body>
+</html>
