@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Gaming Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: #f0f0f0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .action-btn {
+            padding: 5px 12px;
+            margin: 0 3px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: opacity 0.3s;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-upcoming {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-ongoing {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .alert {
+            padding: 12px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Gaming Hub - Admin Panel</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Tournaments</h3>
+                <div class="number" id="totalTournaments">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Active Tournaments</h3>
+                <div class="number" id="activeTournaments">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Registrations</h3>
+                <div class="number" id="totalRegistrations">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Revenue</h3>
+                <div class="number" id="totalRevenue">$0</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="section">
+                <h2>Tournament Management</h2>
+                
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('tournaments')">All Tournaments</button>
+                    <button class="tab-btn" onclick="switchTab('registrations')">Registrations</button>
+                    <button class="tab-btn" onclick="switchTab('createTournament')">Create Tournament</button>
+                </div>
+
+                <!-- All Tournaments Tab -->
+                <div id="tournaments" class="tab-content active">
+                    <div id="tournamentsLoading" class="loading">Loading tournaments...</div>
+                    <table id="tournamentsTableContainer" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tournament Name</th>
+                                <th>Game</th>
+                                <th>Start Date</th>
+                                <th>Prize Pool</th>
+                                <th>Entry Fee</th>
+                                <th>Players</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tournamentsTable"></tbody>
+                    </table>
+                </div>
+
+                <!-- Registrations Tab -->
+                <div id="registrations" class="tab-content">
+                    <div id="registrationsLoading" class="loading">Loading registrations...</div>
+                    <table id="registrationsTableContainer" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Player</th>
+                                <th>Tournament</th>
+                                <th>Team Name</th>
+                                <th>Registration Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="registrationsTable"></tbody>
+                    </table>
+                </div>
+
+                <!-- Create Tournament Tab -->
+                <div id="createTournament" class="tab-content">
+                    <div class="form-group">
+                        <label>Tournament Name *</label>
+                        <input type="text" id="tournamentName" required placeholder="e.g., Summer Championship 2024">
+                    </div>
+                    <div class="form-group">
+                        <label>Game *</label>
+                        <select id="game" required>
+                            <option value="">Select Game</option>
+                            <option value="Free Fire">Free Fire</option>
+                            <option value="PUBG">PUBG</option>
+                            <option value="Clash Royale">Clash Royale</option>
+                            <option value="E Football">E Football</option>
+                            <option value="Valorant">Valorant</option>
+                            <option value="CS:GO">CS:GO</option>
+                            <option value="Dota 2">Dota 2</option>
+                            <option value="League of Legends">League of Legends</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Match Type *</label>
+                        <select id="matchType" required>
+                            <option value="">Select Match Type</option>
+                            <option value="Solo">Solo</option>
+                            <option value="Duo">Duo</option>
+                            <option value="Squad">Squad</option>
+                            <option value="5v5">5v5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date & Time *</label>
+                        <input type="datetime-local" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>End Date & Time *</label>
+                        <input type="datetime-local" id="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Max Players *</label>
+                        <input type="number" id="maxPlayers" min="2" required placeholder="e.g., 64">
+                    </div>
+                    <div class="form-group">
+                        <label>Prize Pool ($) *</label>
+                        <input type="number" id="prizePool" step="0.01" required placeholder="e.g., 5000">
+                    </div>
+                    <div class="form-group">
+                        <label>Entry Fee ($) *</label>
+                        <input type="number" id="entryFee" step="0.01" required placeholder="e.g., 20">
+                    </div>
+                    <div class="form-group">
+                        <label>Map/Arena</label>
+                        <input type="text" id="map" placeholder="e.g., Bermuda, Erangel">
+                    </div>
+                    <div class="form-group">
+                        <label>Rules & Description</label>
+                        <textarea id="rules" placeholder="Tournament rules and details..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Status *</label>
+                        <select id="status" required>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" onclick="createTournament()">Create Tournament</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost/Gaming%20Hub/tournament-api';
+        let tournaments = [];
+        let registrations = [];
+
+        window.onload = function() {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
+            
+            if (!token || role !== 'admin') {
+                alert('Unauthorized access. Admin only.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadDashboardData();
+        };
+
+        async function loadDashboardData() {
+            await loadTournaments();
+            await loadRegistrations();
+            updateStats();
+        }
+
+        async function loadTournaments() {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_URL}/tournaments/list.php`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('tournamentsLoading').style.display = 'none';
+                document.getElementById('tournamentsTableContainer').style.display = 'table';
+                
+                if (data.success && data.data.tournaments.length > 0) {
+                    tournaments = data.data.tournaments;
+                    renderTournamentsTable();
+                } else {
+                    document.getElementById('tournamentsTable').innerHTML = 
+                        '<tr><td colspan="9" class="empty-state">No tournaments found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading tournaments:', error);
+                showAlert('Error loading tournaments', 'error');
+            }
+        }
+
+        async function loadRegistrations() {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_URL}/tournaments/my-registrations.php`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('registrationsLoading').style.display = 'none';
+                document.getElementById('registrationsTableContainer').style.display = 'table';
+                
+                if (data.success && data.data.registrations.length > 0) {
+                    registrations = data.data.registrations;
+                    renderRegistrationsTable();
+                } else {
+                    document.getElementById('registrationsTable').innerHTML = 
+                        '<tr><td colspan="6" class="empty-state">No registrations found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading registrations:', error);
+                showAlert('Error loading registrations', 'error');
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalTournaments').textContent = tournaments.length;
+            
+            const active = tournaments.filter(t => 
+                t.status === 'upcoming' || t.status === 'ongoing'
+            ).length;
+            document.getElementById('activeTournaments').textContent = active;
+            
+            document.getElementById('totalRegistrations').textContent = registrations.length;
+            
+            const revenue = registrations.reduce((sum, r) => {
+                const tournament = tournaments.find(t => t.id === r.tournament_id);
+                return sum + (tournament ? parseFloat(tournament.entry_fee) : 0);
+            }, 0);
+            document.getElementById('totalRevenue').textContent = '$' + revenue.toFixed(2);
+        }
+
+        function renderTournamentsTable() {
+            const tbody = document.getElementById('tournamentsTable');
+            
+            tbody.innerHTML = tournaments.map(t => `
+                <tr>
+                    <td>${t.id}</td>
+                    <td><strong>${t.name}</strong></td>
+                    <td>${t.game}</td>
+                    <td>${new Date(t.start_date).toLocaleString()}</td>
+                    <td>$${t.prize_pool}</td>
+                    <td>$${t.entry_fee}</td>
+                    <td>${t.current_players}/${t.max_players}</td>
+                    <td><span class="status-badge status-${t.status}">${t.status}</span></td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="editTournament(${t.id})">Edit</button>
+                        <button class="action-btn btn-delete" onclick="deleteTournament(${t.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderRegistrationsTable() {
+            const tbody = document.getElementById('registrationsTable');
+            
+            tbody.innerHTML = registrations.map(r => {
+                const tournament = tournaments.find(t => t.id === r.tournament_id);
+                return `
+                    <tr>
+                        <td>${r.id}</td>
+                        <td>${r.username}</td>
+                        <td>${tournament ? tournament.name : 'N/A'}</td>
+                        <td>${r.team_name || '-'}</td>
+                        <td>${new Date(r.registration_date).toLocaleString()}</td>
+                        <td>
+                            <button class="action-btn btn-delete" onclick="deleteRegistration(${r.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function createTournament() {
+            const token = localStorage.getItem('token');
+            
+            const tournamentData = {
+                name: document.getElementById('tournamentName').value,
+                game: document.getElementById('game').value,
+                match_type: document.getElementById('matchType').value,
+                start_date: document.getElementById('startDate').value,
+                end_date: document.getElementById('endDate').value,
+                max_players: document.getElementById('maxPlayers').value,
+                prize_pool: document.getElementById('prizePool').value,
+                entry_fee: document.getElementById('entryFee').value,
+                map: document.getElementById('map').value,
+                rules: document.getElementById('rules').value,
+                status: document.getElementById('status').value
+            };
+
+            // Validation
+            if (!tournamentData.name || !tournamentData.game || !tournamentData.match_type) {
+                showAlert('Please fill all required fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/tournaments/create.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(tournamentData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Tournament created successfully!', 'success');
+                    clearForm();
+                    await loadDashboardData();
+                    switchTab('tournaments');
+                } else {
+                    showAlert(data.message || 'Failed to create tournament', 'error');
+                }
+            } catch (error) {
+                console.error('Error creating tournament:', error);
+                showAlert('Network error. Please try again.', 'error');
+            }
+        }
+
+        async function deleteTournament(id) {
+            if (!confirm('Are you sure you want to delete this tournament?')) return;
+
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`${API_URL}/tournaments/delete.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ tournament_id: id })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Tournament deleted successfully', 'success');
+                    await loadDashboardData();
+                } else {
+                    showAlert(data.message || 'Failed to delete tournament', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting tournament:', error);
+                showAlert('Network error. Please try again.', 'error');
+            }
+        }
+
+        async function deleteRegistration(id) {
+            if (!confirm('Are you sure you want to delete this registration?')) return;
+
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`${API_URL}/tournaments/delete-registration.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ registration_id: id })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Registration deleted successfully', 'success');
+                    await loadDashboardData();
+                } else {
+                    showAlert(data.message || 'Failed to delete registration', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting registration:', error);
+                showAlert('Network error. Please try again.', 'error');
+            }
+        }
+
+        function editTournament(id) {
+            const tournament = tournaments.find(t => t.id === id);
+            if (!tournament) return;
+
+            // Populate form with tournament data
+            document.getElementById('tournamentName').value = tournament.name;
+            document.getElementById('game').value = tournament.game;
+            document.getElementById('matchType').value = tournament.match_type;
+            document.getElementById('startDate').value = tournament.start_date.slice(0, 16);
+            document.getElementById('endDate').value = tournament.end_date.slice(0, 16);
+            document.getElementById('maxPlayers').value = tournament.max_players;
+            document.getElementById('prizePool').value = tournament.prize_pool;
+            document.getElementById('entryFee').value = tournament.entry_fee;
+            document.getElementById('map').value = tournament.map || '';
+            document.getElementById('rules').value = tournament.rules || '';
+            document.getElementById('status').value = tournament.status;
+
+            switchTab('createTournament');
+            showAlert('Edit mode: Update the tournament details and save', 'success');
+        }
+
+        function clearForm() {
+            document.getElementById('tournamentName').value = '';
+            document.getElementById('game').value = '';
+            document.getElementById('matchType').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('maxPlayers').value = '';
+            document.getElementById('prizePool').value = '';
+            document.getElementById('entryFee').value = '';
+            document.getElementById('map').value = '';
+            document.getElementById('rules').value = '';
+            document.getElementById('status').value = 'upcoming';
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'registrations') {
+                loadRegistrations();
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = 'alert alert-' + type;
+            alertBox.style.display = 'block';
+
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

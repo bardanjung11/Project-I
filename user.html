@@ -283,6 +283,22 @@
             font-weight: 600;
         }
         
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+        
+        .loading-spinner {
+            font-size: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
         #registerPopup {
             position: fixed;
             top: 0;
@@ -396,6 +412,22 @@
             background: #f8d7da;
             color: #721c24;
         }
+
+        .refresh-btn {
+            background: white;
+            color: #667eea;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .refresh-btn:hover {
+            background: #f1f3f5;
+        }
     </style>
 </head>
 <body>
@@ -404,6 +436,7 @@
         <h1 class="logo">🎮 Gaming Tournament Hub</h1>
         <div class="user-info">
             <span class="username-badge" id="usernameDisplay">👤 User</span>
+            <button class="refresh-btn" onclick="loadAvailableTournaments()">🔄 Refresh</button>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
     </div>
@@ -419,16 +452,20 @@
     
     <!-- Available Tournaments Tab -->
     <div id="availableTab" class="tab-content active">
-        <div class="tournament-grid" id="availableTournaments">
-            <!-- Tournaments will be loaded here -->
+        <div id="availableLoading" class="loading">
+            <div class="loading-spinner">⏳</div>
+            <div>Loading tournaments...</div>
         </div>
+        <div class="tournament-grid" id="availableTournaments"></div>
     </div>
     
     <!-- My Tournaments Tab -->
     <div id="registeredTab" class="tab-content">
-        <div class="tournament-grid" id="myTournaments">
-            <!-- User's tournaments will be loaded here -->
+        <div id="registeredLoading" class="loading">
+            <div class="loading-spinner">⏳</div>
+            <div>Loading your tournaments...</div>
         </div>
+        <div class="tournament-grid" id="myTournaments"></div>
     </div>
 </div>
 
@@ -454,11 +491,10 @@
 </div>
 
 <script>
-const API_URL = 'http://localhost/Gaming%20Hub/tournament-api';
-
-let currentTournamentId = null;
+    const API_URL = 'http://localhost/Gaming%20Hub/tournament-api';
+    let currentTournamentId = null;
+    let userRegistrations = [];
     
-    // Check if user is logged in
     window.onload = function() {
         const token = localStorage.getItem('token');
         const username = localStorage.getItem('username');
@@ -477,20 +513,44 @@ let currentTournamentId = null;
             'Free Fire': '🔥',
             'PUBG': '🎯',
             'Clash Royale': '👑',
-            'E Football': '⚽'
+            'E Football': '⚽',
+            'Valorant': '🔫',
+            'CS:GO': '💣',
+            'Dota 2': '⚔️',
+            'League of Legends': '🛡️'
         };
         return icons[game] || '🎮';
     }
     
     async function loadAvailableTournaments() {
         try {
-            const response = await fetch(`${API_URL}/tournaments/list.php?status=upcoming`);
+            document.getElementById('availableLoading').style.display = 'block';
+            document.getElementById('availableTournaments').innerHTML = '';
+            
+            const response = await fetch(`${API_URL}/tournaments/list.php`);
             const data = await response.json();
             
-            const container = document.getElementById('availableTournaments');
+            document.getElementById('availableLoading').style.display = 'none';
             
             if (data.success && data.data.tournaments.length > 0) {
-                container.innerHTML = data.data.tournaments.map(t => {
+                const container = document.getElementById('availableTournaments');
+                
+                // Filter only upcoming and ongoing tournaments
+                const activeTournaments = data.data.tournaments.filter(t => 
+                    t.status === 'upcoming' || t.status === 'ongoing'
+                );
+                
+                if (activeTournaments.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state" style="grid-column: 1/-1;">
+                            <div class="empty-icon">🎮</div>
+                            <div class="empty-text">No active tournaments available</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = activeTournaments.map(t => {
                     const fillPercentage = (t.current_players / t.max_players) * 100;
                     const isFull = t.current_players >= t.max_players;
                     
@@ -508,15 +568,19 @@ let currentTournamentId = null;
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label">Entry Fee:</span>
-                                    <span class="info-value">$${t.entry_fee}</span>
+                                    <span class="info-value">$${parseFloat(t.entry_fee).toFixed(2)}</span>
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label">Prize Pool:</span>
-                                    <span class="info-value">$${t.prize_pool}</span>
+                                    <span class="info-value" style="color: #28a745;">$${parseFloat(t.prize_pool).toFixed(2)}</span>
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label">Start Date:</span>
                                     <span class="info-value">${new Date(t.start_date).toLocaleDateString()}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Status:</span>
+                                    <span class="status-badge status-${t.status}">${t.status.toUpperCase()}</span>
                                 </div>
                                 
                                 <div class="slots-indicator">
@@ -526,7 +590,7 @@ let currentTournamentId = null;
                                     </div>
                                 </div>
                                 
-                                <button class="register-btn" onclick="openRegisterPopup(${t.id}, '${t.name}')" ${isFull ? 'disabled' : ''}>
+                                <button class="register-btn" onclick="openRegisterPopup(${t.id}, '${t.name.replace(/'/g, "\\'")}')" ${isFull ? 'disabled' : ''}>
                                     ${isFull ? 'Tournament Full' : 'Register Now'}
                                 </button>
                             </div>
@@ -534,8 +598,8 @@ let currentTournamentId = null;
                     `;
                 }).join('');
             } else {
-                container.innerHTML = `
-                    <div class="empty-state">
+                document.getElementById('availableTournaments').innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
                         <div class="empty-icon">🎮</div>
                         <div class="empty-text">No tournaments available at the moment</div>
                     </div>
@@ -543,6 +607,13 @@ let currentTournamentId = null;
             }
         } catch (error) {
             console.error('Error loading tournaments:', error);
+            document.getElementById('availableLoading').style.display = 'none';
+            document.getElementById('availableTournaments').innerHTML = `
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <div class="empty-icon">⚠️</div>
+                    <div class="empty-text">Error loading tournaments. Please try again.</div>
+                </div>
+            `;
         }
     }
     
@@ -550,6 +621,9 @@ let currentTournamentId = null;
         const token = localStorage.getItem('token');
         
         try {
+            document.getElementById('registeredLoading').style.display = 'block';
+            document.getElementById('myTournaments').innerHTML = '';
+            
             const response = await fetch(`${API_URL}/tournaments/my-registrations.php`, {
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -557,9 +631,11 @@ let currentTournamentId = null;
             });
             const data = await response.json();
             
-            const container = document.getElementById('myTournaments');
+            document.getElementById('registeredLoading').style.display = 'none';
             
             if (data.success && data.data.registrations.length > 0) {
+                const container = document.getElementById('myTournaments');
+                
                 container.innerHTML = data.data.registrations.map(r => {
                     const t = r.tournament;
                     const fillPercentage = (t.current_players / t.max_players) * 100;
@@ -587,15 +663,19 @@ let currentTournamentId = null;
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label">Prize Pool:</span>
-                                    <span class="info-value">$${t.prize_pool}</span>
+                                    <span class="info-value" style="color: #28a745;">$${parseFloat(t.prize_pool).toFixed(2)}</span>
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label">Start Date:</span>
                                     <span class="info-value">${new Date(t.start_date).toLocaleDateString()}</span>
                                 </div>
                                 <div class="info-row">
+                                    <span class="info-label">Registered On:</span>
+                                    <span class="info-value">${new Date(r.registration_date).toLocaleDateString()}</span>
+                                </div>
+                                <div class="info-row">
                                     <span class="info-label">Status:</span>
-                                    <span class="status-badge status-${t.status}">${t.status}</span>
+                                    <span class="status-badge status-${t.status}">${t.status.toUpperCase()}</span>
                                 </div>
                                 
                                 <div class="slots-indicator">
@@ -609,8 +689,8 @@ let currentTournamentId = null;
                     `;
                 }).join('');
             } else {
-                container.innerHTML = `
-                    <div class="empty-state">
+                document.getElementById('myTournaments').innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
                         <div class="empty-icon">📋</div>
                         <div class="empty-text">You haven't registered for any tournaments yet</div>
                     </div>
@@ -618,15 +698,20 @@ let currentTournamentId = null;
             }
         } catch (error) {
             console.error('Error loading my tournaments:', error);
+            document.getElementById('registeredLoading').style.display = 'none';
+            document.getElementById('myTournaments').innerHTML = `
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <div class="empty-icon">⚠️</div>
+                    <div class="empty-text">Error loading your tournaments. Please try again.</div>
+                </div>
+            `;
         }
     }
     
     function switchTab(tab) {
-        // Update tab buttons
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
         
-        // Update tab content
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
         
         if (tab === 'available') {
@@ -699,7 +784,6 @@ let currentTournamentId = null;
         window.location.href = 'login.html';
     }
     
-    // Close popup when clicking outside
     document.getElementById('registerPopup').addEventListener('click', function(e) {
         if (e.target === this) {
             closePopup();
