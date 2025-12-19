@@ -494,7 +494,7 @@
             const token = localStorage.getItem('token');
             
             try {
-                const response = await fetch(`${API_URL}/tournaments/my-registrations.php`, {
+                const response = await fetch(`${API_URL}/tournaments/all-registrations.php`, {
                     headers: {
                         'Authorization': 'Bearer ' + token
                     }
